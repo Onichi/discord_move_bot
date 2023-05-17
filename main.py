@@ -29,24 +29,24 @@ def fetchVoiceChannels():
 
 
 
-@bot.command(name="sta")  # Работает, создаёт новый канал и перемещает пользователя в него
-async def starts(ctx):
-    guild = ctx.guild
-    member = ctx.author
-    reference = guild.get_channel(1042096734651818054)
-    overwrites = {
-        guild.default_role: discord.PermissionOverwrite(view_channel=False, connect=False),
-        member: discord.PermissionOverwrite(view_channel=True, connect=True)
-    }
-    chanel = await guild.create_voice_channel("test", overwrites=overwrites, user_limit=2,
-                                              position=reference.position + 1,
-                                              category=reference.category, )
-    await member.move_to(chanel)
+# @bot.command(name="sta")  # Работает, создаёт новый канал и перемещает пользователя в него
+# async def starts(ctx):
+#     guild = ctx.guild
+#     member = ctx.author
+#     reference = guild.get_channel()
+#     overwrites = {
+#         guild.default_role: discord.PermissionOverwrite(view_channel=False, connect=False),
+#         member: discord.PermissionOverwrite(view_channel=True, connect=True)
+#     }
+#     chanel = await guild.create_voice_channel("test", overwrites=overwrites, user_limit=2,
+#                                               position=reference.position + 1,
+#                                               category=reference.category, )
+#     await member.move_to(chanel)
 
 
 @bot.event
 async def on_voice_state_update(member, before, after):
-    reference_channel = 1042165647825702932 #сюда id
+    reference_channel =  #id голосового канала, который будет создавать приватные
     if after.channel is not None and after.channel.id == reference_channel:
         for guild in bot.guilds:
             reference = guild.get_channel(reference_channel)
@@ -58,7 +58,7 @@ async def on_voice_state_update(member, before, after):
                                                       position=reference.position + 1,
                                                       category=reference.category, )
             await member.move_to(chanel)
-    elif after.channel is None and len(before.channel.members) == 0 and before.channel.id != 1042165647825702932: #и сюда
+    elif after.channel is None and len(before.channel.members) == 0 and before.channel.id != reference_channel:
         await before.channel.delete()
 
 
@@ -66,9 +66,11 @@ async def on_voice_state_update(member, before, after):
 @bot.command(name='clear')
 @commands.has_permissions(manage_channels=True)
 async def delete_empty_channels(ctx):
+    category_id = #id категории голосовых каналов
+    reference_channel = #id голосового канала, который будет создавать приватные
     guild = ctx.guild
     for channel in guild.voice_channels:
-        if channel.category.id == 1042096602287984640 and channel.id != 1042165010153091103 and len(channel.members)==0: #сюда тоже
+        if channel.category.id == category_id and channel.id != reference_channel and len(channel.members)==0: #сюда тоже
             await channel.delete()
 
 
